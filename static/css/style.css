@@ -10,6 +10,7 @@ body {
 ul     {
     list-style-type:none;
 }
+
 .left {
     float:left;
 }
@@ -579,4 +580,14 @@ hr {
 #contact .editbutton, #link .editbutton {
     width: 80px;
     margin: 0 0 20px 150px;
+}
+
+#imageDiv {
+  width:60%;
+  float:left;
+}
+
+#QuestionAndSelectDiv {
+  width:40%;
+  float:left;
 }

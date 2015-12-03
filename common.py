@@ -80,11 +80,19 @@ class RegisterHandler(BaseHandler):
 class RegistHandler(BaseHandler):
     def post(self):
         try:
-            self.set_secure_cookie("paperTeste", self.json['Student_ID'])
+            self.set_secure_cookie("paperTester", self.json['Student_ID'])
             self.db.execute("insert into `User` (`Student_ID`,`Name`) values ('%s', '%s')"%(str(self.json['Student_ID']), str(self.json['Name'])))
             self.send({"student_ID": self.json['Student_ID']})
         except:
             logging.traceback.print_exc()
+
+class ExperimentHandler(BaseHandler):
+    def get(self):
+        try:
+            user = self.get_current_user()
+            self.render("./static/Experiment.html", User = user)
+        except:
+            self.redirect('/', permanent = True)
 
 class SAEApplication(tornado.wsgi.WSGIApplication):
     def __init__(self, url, **metadata):
@@ -94,5 +102,6 @@ class SAEApplication(tornado.wsgi.WSGIApplication):
 router = [
         (r"/", RegisterHandler),
         (r"/post/Regist", RegistHandler),
+        (r"/post/Experiment", ExperimentHandler),
         (r"/(apple-touch-icon\.png)", tornado.web.StaticFileHandler, dict(path=settings['static_path'])),
 ]

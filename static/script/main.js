@@ -28,3 +28,39 @@ function AjaxHandler(method, url, callback, content, vargs) {
 	  }
 	}
 }
+
+function AcquireMessage(items) {
+  alert("kao");
+}
+
+function removeElement(element) {
+  var parentElement = element.parentNode;
+  if (parentElement) {
+    parentElement.removeChild(element);
+  }
+}
+
+function startExperiment() {
+  var title = document.getElementById('title');
+  removeElement(title);
+  var container = document.getElementById('container');
+  removeElement(container);
+  var Experiment = document.getElementById('Experiment');
+  Experiment.style.height = "70%";
+  Experiment.style.paddingTop = "50px";
+  var imageDiv = document.createElement("div");
+  imageDiv.setAttribute("id", "ImageDiv");
+  imageDiv.style.width = "60%";
+  imageDiv.style.float = "left";
+  var QuestionAndSelectDiv = document.createElement("div");
+  QuestionAndSelectDiv.setAttribute("id", "QuestionAndSelectDiv");
+  QuestionAndSelectDiv.style.width = "40%";
+  QuestionAndSelectDiv.style.float = "left";
+  var image = document.createElement("img");
+  image.setAttribute("src", "/static/img/main.jpg");
+  imageDiv.appendChild(image);
+  Experiment.appendChild(imageDiv);
+  Experiment.appendChild(QuestionAndSelectDiv);
+}
+
+
