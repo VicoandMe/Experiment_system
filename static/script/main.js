@@ -29,8 +29,43 @@ function AjaxHandler(method, url, callback, content, vargs) {
 	}
 }
 
-function AcquireMessage(items) {
-  alert("kao");
+function updateMessage(items) {
+  if (items["is_End"] == "0") {
+    document.getElementById('image').setAttribute('src', './static/img/' + items["image"] + '.png');
+    document.getElementById('Question').innerHTML = items["Question"];
+    document.getElementById('PselectA').innerHTML = items["SelectA"];
+    document.getElementById('PselectB').innerHTML = items["SelectB"];
+    document.getElementById('PselectC').innerHTML = items["SelectC"];
+    document.getElementById('PselectD').innerHTML = items["SelectD"];
+  } else {
+    alert("实验结束，感谢您的参与～");
+	var div = document.getElementById("Experiment");
+	removeElement(div);
+  }
+}
+
+function AcquireMessage() {
+  AjaxHandler("POST", "/post/AcquireMessage", updateMessage, {});
+}
+
+function nvoid(items) {
+  if (items["statue"] != "200") {
+    alert("Experiment failed");
+  }
+}
+
+function NextQuestion() {
+  var form = document.getElementsByTagName("form")[0];
+  var input = form.getElementsByTagName("input");
+  var value = "A";
+  for (i = 0; i < 4; i++) {
+    if (input[i].checked == true) {
+	  value = input[i].value;
+	  input[i].checked = false;
+	}
+  }
+  AjaxHandler("POST", "/post/Answer", nvoid, {"value": value});
+  AcquireMessage();
 }
 
 function removeElement(element) {
@@ -40,6 +75,69 @@ function removeElement(element) {
   }
 }
 
+function setInputAttribute(item) {
+  item.setAttribute("type", "radio");
+  item.style.float = "left";
+  item.style.marginRight = "5px";
+}
+
+function createSelection() {
+  var form = document.createElement("form");
+  var selectA = document.createElement("input");
+  setInputAttribute(selectA);
+  selectA.setAttribute("name", "select");
+  selectA.setAttribute("id", "selectA");
+  selectA.setAttribute("value", "A")
+  var PselectA = document.createElement("p");
+  PselectA.innerHTML = "test";
+  PselectA.setAttribute("id", "PselectA");
+  var selectB = document.createElement("input");
+  setInputAttribute(selectB);
+  selectB.setAttribute("name", "select");
+  selectB.setAttribute("id", "selectB");
+  selectB.setAttribute("value", "B");
+  var PselectB = document.createElement("p");
+  PselectB.innerHTML = "test";
+  PselectB.setAttribute("id", "PselectB");
+  var selectC = document.createElement("input");
+  setInputAttribute(selectC);
+  selectC.setAttribute("name", "select");
+  selectC.setAttribute("id", "selectC");
+  selectC.setAttribute("value", "C");
+  var PselectC = document.createElement("p");
+  PselectC.innerHTML = "test";
+  PselectC.setAttribute("id", "PselectC");
+  var selectD = document.createElement("input");
+  setInputAttribute(selectD);
+  selectD.setAttribute("name", "select");
+  selectD.setAttribute("id", "selectD");
+  selectD.setAttribute("value", "D");
+  var PselectD = document.createElement("p");
+  PselectD.innerHTML = "test";
+  PselectD.setAttribute("id", "PselectD");
+  PselectA.style.float = "left";
+  PselectB.style.float = "left";
+  PselectC.style.float = "left";
+  PselectD.style.float = "left";
+  form.appendChild(selectA);
+  form.appendChild(PselectA);
+  form.appendChild(document.createElement("br"));
+  form.appendChild(document.createElement("br"));
+  form.appendChild(selectB);
+  form.appendChild(PselectB);
+  form.appendChild(document.createElement("br"));
+  form.appendChild(document.createElement("br"));
+  form.appendChild(selectC);
+  form.appendChild(PselectC);
+  form.appendChild(document.createElement("br"));
+  form.appendChild(document.createElement("br"));
+  form.appendChild(selectD);
+  form.appendChild(PselectD);
+  form.appendChild(document.createElement("br"));
+  return form;
+}
+
+
 function startExperiment() {
   var title = document.getElementById('title');
   removeElement(title);
@@ -47,7 +145,7 @@ function startExperiment() {
   removeElement(container);
   var Experiment = document.getElementById('Experiment');
   Experiment.style.height = "70%";
-  Experiment.style.paddingTop = "50px";
+  Experiment.style.paddingTop = "55px";
   var imageDiv = document.createElement("div");
   imageDiv.setAttribute("id", "ImageDiv");
   imageDiv.style.width = "60%";
@@ -56,11 +154,34 @@ function startExperiment() {
   QuestionAndSelectDiv.setAttribute("id", "QuestionAndSelectDiv");
   QuestionAndSelectDiv.style.width = "40%";
   QuestionAndSelectDiv.style.float = "left";
+  var Question = document.createElement("h3");
+  Question.setAttribute("id", "Question");
+  Question.style.width = "100%";
+  Question.style.padding = "auto";
+  QuestionAndSelectDiv.appendChild(Question);
+  QuestionAndSelectDiv.appendChild(document.createElement("br"));
+  var selectDiv = document.createElement("div");
+  selectDiv.style.width = "100%";
+  var form = createSelection();
+  selectDiv.appendChild(form);
+  QuestionAndSelectDiv.appendChild(selectDiv);
+  var NextButton = document.createElement("button");
+  NextButton.innerHTML = "下一题";
+  NextButton.onclick = eval("(function() { NextQuestion(); })");
+  NextButton.setAttribute("class", "button gray round");
+  NextButton.style.marginTop = "20px";
+  QuestionAndSelectDiv.appendChild(NextButton);
+
   var image = document.createElement("img");
-  image.setAttribute("src", "/static/img/main.jpg");
+  image.setAttribute("id", "image");
+  image.setAttribute("src", "");
+  image.style.width = "80%";
+  image.style.padding = "auto";
+  image.style.marginLeft = "10px";
   imageDiv.appendChild(image);
   Experiment.appendChild(imageDiv);
   Experiment.appendChild(QuestionAndSelectDiv);
+  AcquireMessage();
 }
 
 

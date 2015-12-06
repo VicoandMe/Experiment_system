@@ -38,6 +38,7 @@ function updateUserArea(items) {
   var startButton = document.createElement("button");
   startButton.innerHTML = "start Experiment";
   startButton.onclick = eval("(function(){ startExperiment(); })");
+  startButton.setAttribute("class", "button gray round");
   container.appendChild(startButton);
   container.style.width = "30%";
   container.style.margin = "auto";
@@ -47,6 +48,7 @@ function Register() {
   var box = document.getElementsByClassName("org_box")[0];
   var inputs = box.getElementsByTagName("input");
   AjaxHandler("POST", "/post/Regist", updateUserArea, {"Name":inputs[0].value, "Student_ID":inputs[1].value});
+  removeElement(box);
 }
 
 
