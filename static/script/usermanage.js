@@ -31,11 +31,13 @@ function updateUserArea(items) {
   var container = document.getElementById('container');
   var pro = document.createElement("h3");
   pro.innerHTML = "实验注意事项";
+  pro.style.paddingTop = "20px";
   var details = document.createElement("p");
-  details.innerHTML = "(1)请认真完成实验";
+  details.innerHTML = "(1) 请认真阅读图表 <br> (2) 请选定答案后再点击下一题，不可空缺";
   container.appendChild(pro);
   container.appendChild(details);
   var startButton = document.createElement("button");
+  startButton.style.marginTop = "20px";
   startButton.innerHTML = "start Experiment";
   startButton.onclick = eval("(function(){ startExperiment(); })");
   startButton.setAttribute("class", "button gray round");
@@ -64,7 +66,7 @@ function RegisterArea() {
   orgbox.appendChild(createInput("Name", "text", "Your Name"));
   orgbox.appendChild(createInput("Student_Id", "text", "Your student ID"));
   var RegisterButton = document.createElement("button");
-  RegisterButton.innerHTML = "Register";
+  RegisterButton.innerHTML = "Regist";
   RegisterButton.onclick = eval("(function(){ Register(); })");
   orgbox.appendChild(RegisterButton);
   body.appendChild(orgbox);

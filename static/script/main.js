@@ -58,14 +58,20 @@ function NextQuestion() {
   var form = document.getElementsByTagName("form")[0];
   var input = form.getElementsByTagName("input");
   var value = "A";
+  var is_checked = 0;
   for (i = 0; i < 4; i++) {
     if (input[i].checked == true) {
 	  value = input[i].value;
+	  is_checked = 1;
 	  input[i].checked = false;
 	}
   }
-  AjaxHandler("POST", "/post/Answer", nvoid, {"value": value});
-  AcquireMessage();
+  if (1 == is_checked) {
+    AjaxHandler("POST", "/post/Answer", nvoid, {"value": value});
+    AcquireMessage();
+  } else {
+    alert("选项不能为空");
+  }
 }
 
 function removeElement(element) {
@@ -157,7 +163,8 @@ function startExperiment() {
   var Question = document.createElement("h3");
   Question.setAttribute("id", "Question");
   Question.style.width = "100%";
-  Question.style.padding = "auto";
+  Question.style.paddingTop = "20px";
+  Question.style.paddingRight = "20px";
   QuestionAndSelectDiv.appendChild(Question);
   QuestionAndSelectDiv.appendChild(document.createElement("br"));
   var selectDiv = document.createElement("div");
@@ -165,19 +172,25 @@ function startExperiment() {
   var form = createSelection();
   selectDiv.appendChild(form);
   QuestionAndSelectDiv.appendChild(selectDiv);
+  QuestionAndSelectDiv.appendChild(document.createElement("br"));
   var NextButton = document.createElement("button");
   NextButton.innerHTML = "下一题";
   NextButton.onclick = eval("(function() { NextQuestion(); })");
   NextButton.setAttribute("class", "button gray round");
-  NextButton.style.marginTop = "20px";
-  QuestionAndSelectDiv.appendChild(NextButton);
+  NextButton.style.marginTop = "25px";
+  NextButton.style.marginLeft = "20px";
+  NextButton.style.float = "left";
+  var buttonDiv = document.createElement("div");
+  buttonDiv.style.width = "100%";
+  buttonDiv.appendChild(NextButton);
+  QuestionAndSelectDiv.appendChild(buttonDiv);
 
   var image = document.createElement("img");
   image.setAttribute("id", "image");
   image.setAttribute("src", "");
   image.style.width = "80%";
   image.style.padding = "auto";
-  image.style.marginLeft = "10px";
+  image.style.marginLeft = "20px";
   imageDiv.appendChild(image);
   Experiment.appendChild(imageDiv);
   Experiment.appendChild(QuestionAndSelectDiv);

@@ -2,6 +2,7 @@
 
 import os
 import time
+import random
 import tornado
 import logging
 import hashlib
@@ -57,8 +58,8 @@ class BaseHandler(RequestHandler):
             if self.request.body != "":
                 self.json = json_decode(self.request.body)
             self.ret = {}
-            self.set_secure_cookie("Image_count", "4")
-            self.set_secure_cookie("Question_count", "4")
+            self.set_secure_cookie("Image_count", "13")
+            self.set_secure_cookie("Question_count", "6")
             self.db = tornado.database.Connection(MYSQL_HOST, MYSQL_DB, MYSQL_USER, MYSQL_PASS, max_idle_time = 5)
         except:
             logging.traceback.print_exc()
@@ -85,7 +86,8 @@ class RegistHandler(BaseHandler):
         try:
             self.set_secure_cookie("paperTester", self.json['Student_ID'])
             self.set_secure_cookie("current_image", "1")
-            self.set_secure_cookie("current_question", "0")
+            self.set_secure_cookie("current_question", "0") 
+            self.set_secure_cookie("random", str(random.randrange(1,5)))
             self.db.execute("insert into `User` (`Student_ID`,`Name`) values ('%s', '%s')"%(str(self.json['Student_ID']), str(self.json['Name'])))
             self.send({"student_ID": self.json['Student_ID']})
         except:
@@ -101,11 +103,10 @@ class ExperimentHandler(BaseHandler):
 
 class AnswerHandler(BaseHandler):
     def post(self):
-        image = self.get_secure_cookie("current_image")
+        image = self.get_secure_cookie("current_image") + '-' + self.get_secure_cookie("random")
         Q_ID = self.get_secure_cookie("current_question")
         Student_ID = self.get_current_user()
         Answer = self.json["value"]
-        print Answer
         self.db.execute("insert into `ParticipateAnswer` (`Student_ID`, `Image_ID`, `Q_ID`, `Answer`) values ('%s', '%s', '%s', '%s')" % (str(Student_ID), str(image), str(Q_ID), str(Answer)))
         self.send({"statue":"200"})
 
@@ -113,6 +114,7 @@ class AcquireMessageHandler(BaseHandler):
     def post(self):
         current_image = self.get_secure_cookie("current_image")
         current_question = self.get_secure_cookie("current_question")
+        random_d = self.get_secure_cookie("random")
         if current_image == "1" and current_question == "0":
             self.set_secure_cookie("startTime", str(int(time.time())))
         if int(current_question) >= int(self.get_secure_cookie("Question_count")):
@@ -124,6 +126,9 @@ class AcquireMessageHandler(BaseHandler):
             
             current_image = str(int(current_image) + 1)
             self.set_secure_cookie("current_image", current_image)
+            random_d = str(random.randrange(1,5))
+            print "Reset Random", "===", random_d
+            self.set_secure_cookie("random", random_d)
             current_question = self.set_secure_cookie("current_question", "0")
             current_question = "0"
         if int(current_image) > int(self.get_secure_cookie("Image_count")):
@@ -131,7 +136,6 @@ class AcquireMessageHandler(BaseHandler):
         else:
             current_question = str(int(current_question) + 1)
             self.set_secure_cookie("current_question", current_question)
-           # print current_image, "=--=", current_question, "=--=",self.get_secure_cookie("Question_count") ,"\n"
             Question_Data = self.db.query('select * from Question where Image_ID = %s and Q_ID = %s' % (current_image, current_question))
             data = {}
             data["Question"] = Question_Data[0]["Question"]
@@ -140,7 +144,7 @@ class AcquireMessageHandler(BaseHandler):
             data["SelectC"] = Question_Data[0]["SelectC"]
             data["SelectD"] = Question_Data[0]["SelectD"]
             data["is_End"] = "0"
-            image = current_image + '-1'
+            image = current_image + '-' + random_d
             data["image"] = image
             self.send(data)
 
