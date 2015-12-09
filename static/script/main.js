@@ -49,13 +49,13 @@ function AcquireMessage() {
 }
 
 function nvoid(items) {
-  if (items["statue"] != "200") {
+  if (items["status"] != "200") {
     alert("Experiment failed");
   }
 }
 
 function NextQuestion() {
-  var form = document.getElementsByTagName("form")[0];
+  var form = document.getElementsByTagName("form")[1];
   var input = form.getElementsByTagName("input");
   var value = "A";
   var is_checked = 0;
@@ -143,6 +143,42 @@ function createSelection() {
   return form;
 }
 
+function submitGrade() {
+  var select = document.getElementById("select");
+  var value = select.value;
+  AjaxHandler("POST", "/post/Grade", nvoid, {"value":value});
+}
+
+function createGradeDiv() {
+  var div = document.createElement("div");
+  div.style.hetght = "20%";
+  div.setAttribute("id", "GradeDiv");
+  var p = document.createElement("h3");
+  p.innerHTML = "请问该图是否易于理解？ <br> 请为该图评分。<br> 1表示极易理解，7表示极难理解";
+  var form = document.createElement("form");
+  form.style.marginTop = "10px";
+  var select = document.createElement("select");
+  select.setAttribute("id", "select");
+  select.style.width = "80px";
+  for(i = 1; i < 8; i++) {
+    var option = document.createElement("option");
+	option.setAttribute("value", i.toString());
+	option.innerHTML = i.toString();
+	select.appendChild(option);
+  }
+  var subButton = document.createElement("button");
+  subButton.innerHTML = "提交评分";
+  subButton.onclick = eval("(function() { submitGrade(); })");
+  subButton.setAttribute("class", "button gray round");
+  subButton.style.marginTop = "10px";
+  subButton.style.marginLeft = "10px";
+  subButton.style.float = "left";
+  form.appendChild(select);
+  div.appendChild(p);
+  div.appendChild(form);
+  div.appendChild(subButton);
+  return div;
+}
 
 function startExperiment() {
   var title = document.getElementById('title');
@@ -151,20 +187,27 @@ function startExperiment() {
   removeElement(container);
   var Experiment = document.getElementById('Experiment');
   Experiment.style.height = "70%";
-  Experiment.style.paddingTop = "55px";
+  Experiment.style.paddingTop = "40px";
   var imageDiv = document.createElement("div");
   imageDiv.setAttribute("id", "ImageDiv");
   imageDiv.style.width = "80%";
   imageDiv.style.float = "left";
+
+
   var QuestionAndSelectDiv = document.createElement("div");
   QuestionAndSelectDiv.setAttribute("id", "QuestionAndSelectDiv");
   QuestionAndSelectDiv.style.width = "20%";
   QuestionAndSelectDiv.style.float = "left";
-  QuestionAndSelectDiv.style.marginTop = "20%";
+  QuestionAndSelectDiv.style.marginTop = "5%";
+  
+  var GradeDiv = createGradeDiv();
+  QuestionAndSelectDiv.appendChild(GradeDiv);
+  QuestionAndSelectDiv.appendChild(document.createElement("br"));
+
   var Question = document.createElement("h3");
   Question.setAttribute("id", "Question");
   Question.style.width = "100%";
-  Question.style.paddingTop = "20px";
+  Question.style.marginTop = "150px";
   Question.style.paddingRight = "20px";
   QuestionAndSelectDiv.appendChild(Question);
   QuestionAndSelectDiv.appendChild(document.createElement("br"));

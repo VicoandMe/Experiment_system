@@ -37,6 +37,18 @@ MYSQL_HOST_S = ""
 MYSQL_PORT = 8080
 MYSQL_HOST = "%s:%s" % (MYSQL_HOST_M, str(MYSQL_PORT))
 
+try:
+    import sae.const
+    MYSQL_DB = sae.const.MYSQL_DB
+    MYSQL_USER = sae.const.MYSQL_USER
+    MYSQL_PASS = sae.const.MYSQL_PASS
+    MYSQL_HOST_M = sae.const.MYSQL_HOST
+    MYSQL_HOST_S = sae.const.MYSQL_HOST_S
+    MYSQL_PORT = sae.const.MYSQL_PORT
+    MYSQL_HOST = "%s:%s" % (MYSQL_HOST, str(MYSQL_PORT))
+except:
+    pass
+
 rootdir = os.path.split(unicode(os.path.realpath(__file__),'gb2312'))[0]
 
 settings = {
@@ -58,6 +70,7 @@ class BaseHandler(RequestHandler):
             if self.request.body != "":
                 self.json = json_decode(self.request.body)
             self.ret = {}
+            self.G = ["0", "01234123412341", "02341234123412", "03412341234123", "04123412341234"]
             self.set_secure_cookie("Image_count", "13")
             self.set_secure_cookie("Question_count", "6")
             self.db = tornado.database.Connection(MYSQL_HOST, MYSQL_DB, MYSQL_USER, MYSQL_PASS, max_idle_time = 5)
@@ -87,12 +100,14 @@ class RegistHandler(BaseHandler):
             self.set_secure_cookie("paperTester", self.json['Student_ID'])
             self.set_secure_cookie("current_image", "1")
             self.set_secure_cookie("current_question", "0") 
-            self.set_secure_cookie("random", str(random.randrange(1,5)))
+            #self.set_secure_cookie("random", str(random.randrange(1,5)))
+            self.set_secure_cookie("Group_ID", self.json['Group_ID'])
+            print self.json['Group_ID']
             self.db.execute("insert into `User` (`Student_ID`,`Name`) values ('%s', '%s')"%(str(self.json['Student_ID']), str(self.json['Name'])))
-            self.send({"student_ID": self.json['Student_ID'], "statue" : "200"})
+            self.send({"student_ID": self.json['Student_ID'], "status" : "200"})
         except:
             logging.traceback.print_exc()
-            self.send({"statue":"500"});
+            self.send({"status":"500"});
 
 class ExperimentHandler(BaseHandler):
     def get(self):
@@ -102,19 +117,36 @@ class ExperimentHandler(BaseHandler):
         except:
             self.redirect('/', permanent = True)
 
+class GradeHandler(BaseHandler):
+    def post(self):
+        try:
+            value = self.json['value']
+            Student_ID = self.get_current_user()
+            current_image = self.get_secure_cookie("current_image")
+            Image = current_image + '-' + self.G[int(self.get_secure_cookie("Group_ID"))][int(current_image)]
+            try:
+                self.db.execute("insert into `ImageGrade` (`Image_ID`, `Student_ID`, `Grade`) values ('%s', '%s', '%s')" % (Image, Student_ID, value))
+            except:
+                self.db.execute("UPDATE `ImageGrade` SET Grade = '%s' WHERE Student_ID = '%s' and Image_ID = '%s'" % (value, Student_ID, Image))
+            self.send({"status":"200"})
+        except:
+            self.send({"status":"500"})
+
 class AnswerHandler(BaseHandler):
     def post(self):
         try:
-            image = self.get_secure_cookie("current_image") + '-' + self.get_secure_cookie("random")
+            #image = self.get_secure_cookie("current_image") + '-' + self.get_secure_cookie("random")
+            current_image = self.get_secure_cookie("current_image")
+            image = current_image + '-' + self.G[int(self.get_secure_cookie("Group_ID"))][int(current_image)]
             Q_ID = self.get_secure_cookie("current_question")
             Student_ID = self.get_current_user()
             Answer = self.json["value"]
             print Student_ID, " ", image, " ", Q_ID, " ", Answer
             self.db.execute("insert into `ParticipateAnswer` (`Student_ID`, `Image_ID`, `Q_ID`, `Answer`) values ('%s', '%s', '%s', '%s')" % (str(Student_ID), str(image), str(Q_ID), str(Answer)))
-            self.send({"statue":"200"})
+            self.send({"status":"200"})
         except:
             logging.traceback.print_exc()
-            self.send({"statue":"500"});
+            self.send({"status":"500"});
            
 
 class AcquireMessageHandler(BaseHandler):
@@ -122,21 +154,21 @@ class AcquireMessageHandler(BaseHandler):
         try:
             current_image = self.get_secure_cookie("current_image")
             current_question = self.get_secure_cookie("current_question")
-            random_d = self.get_secure_cookie("random")
+            #random_d = self.get_secure_cookie("random")
             if current_image == "1" and current_question == "0":
                 self.set_secure_cookie("startTime", str(int(time.time())))
             if int(current_question) >= int(self.get_secure_cookie("Question_count")):
-            #store UseTime of current_image and reset startTime
+                #store UseTime of current_image and reset startTime
                 Student_ID = self.get_current_user()
                 useTime = str(int(time.time()) - int(self.get_secure_cookie("startTime")))
                 self.set_secure_cookie("startTime", str(int(time.time())))
                 self.db.execute("insert into `UseTime` (`Student_ID`, `Image_ID`, `UseTime`) values ('%s', '%s', '%s')" % (Student_ID, current_image, useTime))
-            #reset current Image
+                #reset current Image
                 current_image = str(int(current_image) + 1)
                 self.set_secure_cookie("current_image", current_image)
-                random_d = str(random.randrange(1,5))
+                #random_d = str(random.randrange(1,5))
                 #print "Reset Random", "===", random_d
-                self.set_secure_cookie("random", random_d)
+                #self.set_secure_cookie("random", random_d)
                 current_question = self.set_secure_cookie("current_question", "0")
                 current_question = "0"
 
@@ -153,12 +185,12 @@ class AcquireMessageHandler(BaseHandler):
                 data["SelectC"] = Question_Data[0]["SelectC"]
                 data["SelectD"] = Question_Data[0]["SelectD"]
                 data["is_End"] = "0"
-                image = current_image + '-' + random_d
+                image = current_image + '-' + self.G[int(self.get_secure_cookie("Group_ID"))][int(current_image)]
                 data["image"] = image
                 self.send(data)
         except:
             logging.traceback.print_exc()
-            self.send({"statue":"500"});
+            self.send({"status":"500"});
 
 
 class SAEApplication(tornado.wsgi.WSGIApplication):
@@ -171,6 +203,7 @@ router = [
         (r"/post/Regist", RegistHandler),
         (r"/post/Experiment", ExperimentHandler),
         (r"/post/Answer", AnswerHandler),
+        (r"/post/Grade", GradeHandler),
         (r"/post/AcquireMessage", AcquireMessageHandler),
         (r"/(apple-touch-icon\.png)", tornado.web.StaticFileHandler, dict(path=settings['static_path'])),
 ]

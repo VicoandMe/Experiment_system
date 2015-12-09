@@ -37,19 +37,15 @@ CREATE TABLE `Experiment`.`ParticipateAnswer` (
   `Answer` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`Student_ID`, `Image_ID`, `Q_ID`));
 
+CREATE TABLE `Experiment`.`ImageGrade` (
+  `Image_ID` VARCHAR(45) NOT NULL,
+  `Student_ID` VARCHAR(45) NOT NULL,
+  `Grade` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`Image_ID`, `Student_ID`));
+
 CREATE TABLE `Experiment`.`UseTime` (
   `Student_ID` VARCHAR(45) NOT NULL,
   `Image_ID` VARCHAR(45) NOT NULL,
   `UseTime` BIGINT NOT NULL,
-  PRIMARY KEY (`Student_ID`, `Image_ID`),
-  CONSTRAINT `Student_ID`
-    FOREIGN KEY (`Student_ID`)
-    REFERENCES `Experiment`.`User` (`Student_ID`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `Image_ID`
-    FOREIGN KEY (`Image_ID`)
-    REFERENCES `Experiment`.`Image` (`Image_ID`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
+  PRIMARY KEY (`Student_ID`, `Image_ID`));
 

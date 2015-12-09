@@ -25,7 +25,7 @@ function createInput(name, type, value) {
 }
 
 function updateUserArea(items) {
-  if (items["statue"] == "200") {
+  if (items['status'] == "200") {
 	document.getElementById('UserArea').innerHTML = items["student_ID"];
 	var title = document.getElementById('title');
 	title.style.height = "25%";
@@ -53,7 +53,7 @@ function updateUserArea(items) {
 function Register() {
   var box = document.getElementsByClassName("org_box")[0];
   var inputs = box.getElementsByTagName("input");
-  AjaxHandler("POST", "/post/Regist", updateUserArea, {"Name":inputs[0].value, "Student_ID":inputs[1].value});
+  AjaxHandler("POST", "/post/Regist", updateUserArea, {"Name":inputs[0].value, "Student_ID":inputs[1].value, "Group_ID":inputs[2].value});
   removeElement(box);
 }
 
@@ -69,6 +69,7 @@ function RegisterArea() {
   orgbox.appendChild(orgboxcor);
   orgbox.appendChild(createInput("Name", "text", "Your Name"));
   orgbox.appendChild(createInput("Student_Id", "text", "Your student ID"));
+  orgbox.appendChild(createInput("Group_ID", "text", "Your Experiment Group"));
   var RegisterButton = document.createElement("button");
   RegisterButton.innerHTML = "Regist";
   RegisterButton.onclick = eval("(function(){ Register(); })");
