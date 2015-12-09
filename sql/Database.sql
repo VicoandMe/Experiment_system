@@ -35,7 +35,7 @@ CREATE TABLE `Experiment`.`ParticipateAnswer` (
   `Image_ID` VARCHAR(45) NOT NULL,
   `Q_ID` VARCHAR(45) NOT NULL,
   `Answer` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`Q_ID`, `Student_ID`, `Image_ID`));
+  PRIMARY KEY (`Student_ID`, `Image_ID`, `Q_ID`));
 
 CREATE TABLE `Experiment`.`UseTime` (
   `Student_ID` VARCHAR(45) NOT NULL,

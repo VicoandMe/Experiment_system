@@ -1,4 +1,4 @@
-#*- coding:utf-8 -*-
+#- coding:utf-8 -*-
 
 import os
 import time
@@ -63,7 +63,7 @@ class BaseHandler(RequestHandler):
             self.db = tornado.database.Connection(MYSQL_HOST, MYSQL_DB, MYSQL_USER, MYSQL_PASS, max_idle_time = 5)
         except:
             logging.traceback.print_exc()
-            #self.send()
+            self.send()
 
     def send(self, data = {}):
         ret = {}
@@ -89,9 +89,10 @@ class RegistHandler(BaseHandler):
             self.set_secure_cookie("current_question", "0") 
             self.set_secure_cookie("random", str(random.randrange(1,5)))
             self.db.execute("insert into `User` (`Student_ID`,`Name`) values ('%s', '%s')"%(str(self.json['Student_ID']), str(self.json['Name'])))
-            self.send({"student_ID": self.json['Student_ID']})
+            self.send({"student_ID": self.json['Student_ID'], "statue" : "200"})
         except:
             logging.traceback.print_exc()
+            self.send({"statue":"500"});
 
 class ExperimentHandler(BaseHandler):
     def get(self):
@@ -103,50 +104,62 @@ class ExperimentHandler(BaseHandler):
 
 class AnswerHandler(BaseHandler):
     def post(self):
-        image = self.get_secure_cookie("current_image") + '-' + self.get_secure_cookie("random")
-        Q_ID = self.get_secure_cookie("current_question")
-        Student_ID = self.get_current_user()
-        Answer = self.json["value"]
-        self.db.execute("insert into `ParticipateAnswer` (`Student_ID`, `Image_ID`, `Q_ID`, `Answer`) values ('%s', '%s', '%s', '%s')" % (str(Student_ID), str(image), str(Q_ID), str(Answer)))
-        self.send({"statue":"200"})
+        try:
+            image = self.get_secure_cookie("current_image") + '-' + self.get_secure_cookie("random")
+            Q_ID = self.get_secure_cookie("current_question")
+            Student_ID = self.get_current_user()
+            Answer = self.json["value"]
+            print Student_ID, " ", image, " ", Q_ID, " ", Answer
+            self.db.execute("insert into `ParticipateAnswer` (`Student_ID`, `Image_ID`, `Q_ID`, `Answer`) values ('%s', '%s', '%s', '%s')" % (str(Student_ID), str(image), str(Q_ID), str(Answer)))
+            self.send({"statue":"200"})
+        except:
+            logging.traceback.print_exc()
+            self.send({"statue":"500"});
+           
 
 class AcquireMessageHandler(BaseHandler):
     def post(self):
-        current_image = self.get_secure_cookie("current_image")
-        current_question = self.get_secure_cookie("current_question")
-        random_d = self.get_secure_cookie("random")
-        if current_image == "1" and current_question == "0":
-            self.set_secure_cookie("startTime", str(int(time.time())))
-        if int(current_question) >= int(self.get_secure_cookie("Question_count")):
-            
-            Student_ID = self.get_current_user()
-            useTime = str(int(time.time()) - int(self.get_secure_cookie("startTime")))
-            self.set_secure_cookie("startTime", str(int(time.time())))
-            self.db.execute("insert into `UseTime` (`Student_ID`, `Image_ID`, `UseTime`) values ('%s', '%s', '%s')" % (Student_ID, current_image, useTime))
-            
-            current_image = str(int(current_image) + 1)
-            self.set_secure_cookie("current_image", current_image)
-            random_d = str(random.randrange(1,5))
-            print "Reset Random", "===", random_d
-            self.set_secure_cookie("random", random_d)
-            current_question = self.set_secure_cookie("current_question", "0")
-            current_question = "0"
-        if int(current_image) > int(self.get_secure_cookie("Image_count")):
-            self.send({"is_End": "1"})
-        else:
-            current_question = str(int(current_question) + 1)
-            self.set_secure_cookie("current_question", current_question)
-            Question_Data = self.db.query('select * from Question where Image_ID = %s and Q_ID = %s' % (current_image, current_question))
-            data = {}
-            data["Question"] = Question_Data[0]["Question"]
-            data["SelectA"] = Question_Data[0]["SelectA"]
-            data["SelectB"] = Question_Data[0]["SelectB"]
-            data["SelectC"] = Question_Data[0]["SelectC"]
-            data["SelectD"] = Question_Data[0]["SelectD"]
-            data["is_End"] = "0"
-            image = current_image + '-' + random_d
-            data["image"] = image
-            self.send(data)
+        try:
+            current_image = self.get_secure_cookie("current_image")
+            current_question = self.get_secure_cookie("current_question")
+            random_d = self.get_secure_cookie("random")
+            if current_image == "1" and current_question == "0":
+                self.set_secure_cookie("startTime", str(int(time.time())))
+            if int(current_question) >= int(self.get_secure_cookie("Question_count")):
+            #store UseTime of current_image and reset startTime
+                Student_ID = self.get_current_user()
+                useTime = str(int(time.time()) - int(self.get_secure_cookie("startTime")))
+                self.set_secure_cookie("startTime", str(int(time.time())))
+                self.db.execute("insert into `UseTime` (`Student_ID`, `Image_ID`, `UseTime`) values ('%s', '%s', '%s')" % (Student_ID, current_image, useTime))
+            #reset current Image
+                current_image = str(int(current_image) + 1)
+                self.set_secure_cookie("current_image", current_image)
+                random_d = str(random.randrange(1,5))
+                #print "Reset Random", "===", random_d
+                self.set_secure_cookie("random", random_d)
+                current_question = self.set_secure_cookie("current_question", "0")
+                current_question = "0"
+
+            if int(current_image) > int(self.get_secure_cookie("Image_count")):
+                self.send({"is_End": "1"})
+            else:
+                current_question = str(int(current_question) + 1)
+                self.set_secure_cookie("current_question", current_question)
+                Question_Data = self.db.query('select * from Question where Image_ID = %s and Q_ID = %s' % (current_image, current_question))
+                data = {}
+                data["Question"] = Question_Data[0]["Question"]
+                data["SelectA"] = Question_Data[0]["SelectA"]
+                data["SelectB"] = Question_Data[0]["SelectB"]
+                data["SelectC"] = Question_Data[0]["SelectC"]
+                data["SelectD"] = Question_Data[0]["SelectD"]
+                data["is_End"] = "0"
+                image = current_image + '-' + random_d
+                data["image"] = image
+                self.send(data)
+        except:
+            logging.traceback.print_exc()
+            self.send({"statue":"500"});
+
 
 class SAEApplication(tornado.wsgi.WSGIApplication):
     def __init__(self, url, **metadata):

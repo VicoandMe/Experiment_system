@@ -25,25 +25,29 @@ function createInput(name, type, value) {
 }
 
 function updateUserArea(items) {
-  document.getElementById('UserArea').innerHTML = items["student_ID"];
-  var title = document.getElementById('title');
-  title.style.height = "25%";
-  var container = document.getElementById('container');
-  var pro = document.createElement("h3");
-  pro.innerHTML = "实验注意事项";
-  pro.style.paddingTop = "20px";
-  var details = document.createElement("p");
-  details.innerHTML = "(1) 请认真阅读图表 <br> (2) 请选定答案后再点击下一题，不可空缺";
-  container.appendChild(pro);
-  container.appendChild(details);
-  var startButton = document.createElement("button");
-  startButton.style.marginTop = "20px";
-  startButton.innerHTML = "start Experiment";
-  startButton.onclick = eval("(function(){ startExperiment(); })");
-  startButton.setAttribute("class", "button gray round");
-  container.appendChild(startButton);
-  container.style.width = "30%";
-  container.style.margin = "auto";
+  if (items["statue"] == "200") {
+	document.getElementById('UserArea').innerHTML = items["student_ID"];
+	var title = document.getElementById('title');
+	title.style.height = "25%";
+	var container = document.getElementById('container');
+	var pro = document.createElement("h3");
+	pro.innerHTML = "实验注意事项";
+	pro.style.paddingTop = "20px";
+	var details = document.createElement("p");
+	details.innerHTML = "(1) 请认真阅读图表 <br> (2) 请选定答案后再点击下一题，不可空缺";
+	container.appendChild(pro);
+	container.appendChild(details);
+	var startButton = document.createElement("button");
+	startButton.style.marginTop = "20px";
+	startButton.innerHTML = "start Experiment";
+	startButton.onclick = eval("(function(){ startExperiment(); })");
+	startButton.setAttribute("class", "button gray round");
+	container.appendChild(startButton);
+	container.style.width = "30%";
+	container.style.margin = "auto";
+  } else {
+    alert("请使用未注册的Student ID");
+  }
 }
 
 function Register() {

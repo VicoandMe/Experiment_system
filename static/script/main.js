@@ -154,12 +154,13 @@ function startExperiment() {
   Experiment.style.paddingTop = "55px";
   var imageDiv = document.createElement("div");
   imageDiv.setAttribute("id", "ImageDiv");
-  imageDiv.style.width = "60%";
+  imageDiv.style.width = "80%";
   imageDiv.style.float = "left";
   var QuestionAndSelectDiv = document.createElement("div");
   QuestionAndSelectDiv.setAttribute("id", "QuestionAndSelectDiv");
-  QuestionAndSelectDiv.style.width = "40%";
+  QuestionAndSelectDiv.style.width = "20%";
   QuestionAndSelectDiv.style.float = "left";
+  QuestionAndSelectDiv.style.marginTop = "20%";
   var Question = document.createElement("h3");
   Question.setAttribute("id", "Question");
   Question.style.width = "100%";
@@ -188,7 +189,7 @@ function startExperiment() {
   var image = document.createElement("img");
   image.setAttribute("id", "image");
   image.setAttribute("src", "");
-  image.style.width = "80%";
+  image.style.width = "90%";
   image.style.padding = "auto";
   image.style.marginLeft = "20px";
   imageDiv.appendChild(image);
