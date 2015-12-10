@@ -1,20 +1,15 @@
-DROP DATABASE IF EXISTS `Experiment`;
 
-CREATE DATABASE `Experiment` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
-
-USE Experiment;
-
-CREATE TABLE `Experiment`.`User` (
+CREATE TABLE `User` (
   `Student_ID` VARCHAR(45) NOT NULL,
   `Name` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`Student_ID`));
 
-CREATE TABLE `Experiment`.`Image` (
+CREATE TABLE `Image` (
   `Image_ID` VARCHAR(45) NOT NULL,
   `Question_count` INT NOT NULL,
   PRIMARY KEY (`Image_ID`));
 
-CREATE TABLE `Experiment`.`Question` (
+CREATE TABLE `Question` (
   `Image_ID` VARCHAR(45) NOT NULL,
   `Q_ID` VARCHAR(45) NOT NULL,
   `Question` VARCHAR(100) NOT NULL,
@@ -30,20 +25,20 @@ CREATE TABLE `Experiment`.`Question` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 
-CREATE TABLE `Experiment`.`ParticipateAnswer` (
+CREATE TABLE `ParticipateAnswer` (
   `Student_ID` VARCHAR(45) NOT NULL,
   `Image_ID` VARCHAR(45) NOT NULL,
   `Q_ID` VARCHAR(45) NOT NULL,
   `Answer` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`Student_ID`, `Image_ID`, `Q_ID`));
 
-CREATE TABLE `Experiment`.`ImageGrade` (
+CREATE TABLE `ImageGrade` (
   `Image_ID` VARCHAR(45) NOT NULL,
   `Student_ID` VARCHAR(45) NOT NULL,
   `Grade` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`Image_ID`, `Student_ID`));
 
-CREATE TABLE `Experiment`.`UseTime` (
+CREATE TABLE `UseTime` (
   `Student_ID` VARCHAR(45) NOT NULL,
   `Image_ID` VARCHAR(45) NOT NULL,
   `UseTime` BIGINT NOT NULL,

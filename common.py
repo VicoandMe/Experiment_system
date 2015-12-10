@@ -45,7 +45,7 @@ try:
     MYSQL_HOST_M = sae.const.MYSQL_HOST
     MYSQL_HOST_S = sae.const.MYSQL_HOST_S
     MYSQL_PORT = sae.const.MYSQL_PORT
-    MYSQL_HOST = "%s:%s" % (MYSQL_HOST, str(MYSQL_PORT))
+    MYSQL_HOST = "%s:%s" % (MYSQL_HOST_M, str(MYSQL_PORT))
 except:
     pass
 
@@ -76,6 +76,7 @@ class BaseHandler(RequestHandler):
             self.db = tornado.database.Connection(MYSQL_HOST, MYSQL_DB, MYSQL_USER, MYSQL_PASS, max_idle_time = 5)
         except:
             logging.traceback.print_exc()
+            print "DB connect error"
             self.send()
 
     def send(self, data = {}):
@@ -90,7 +91,7 @@ class BaseHandler(RequestHandler):
         pass
 
 class RegisterHandler(BaseHandler):
-    @tornado.web.asynchronous
+  #  @tornado.web.asynchronous
     def get(self):
         self.render("./static/index.html")
 
@@ -155,6 +156,7 @@ class AcquireMessageHandler(BaseHandler):
             current_image = self.get_secure_cookie("current_image")
             current_question = self.get_secure_cookie("current_question")
             #random_d = self.get_secure_cookie("random")
+            Image = current_image + '-' + self.G[int(self.get_secure_cookie("Group_ID"))][int(current_image)]
             if current_image == "1" and current_question == "0":
                 self.set_secure_cookie("startTime", str(int(time.time())))
             if int(current_question) >= int(self.get_secure_cookie("Question_count")):
@@ -162,7 +164,7 @@ class AcquireMessageHandler(BaseHandler):
                 Student_ID = self.get_current_user()
                 useTime = str(int(time.time()) - int(self.get_secure_cookie("startTime")))
                 self.set_secure_cookie("startTime", str(int(time.time())))
-                self.db.execute("insert into `UseTime` (`Student_ID`, `Image_ID`, `UseTime`) values ('%s', '%s', '%s')" % (Student_ID, current_image, useTime))
+                self.db.execute("insert into `UseTime` (`Student_ID`, `Image_ID`, `UseTime`) values ('%s', '%s', '%s')" % (Student_ID, Image, useTime))
                 #reset current Image
                 current_image = str(int(current_image) + 1)
                 self.set_secure_cookie("current_image", current_image)
@@ -190,7 +192,7 @@ class AcquireMessageHandler(BaseHandler):
                 self.send(data)
         except:
             logging.traceback.print_exc()
-            self.send({"status":"500"});
+            self.send({"status":"500", "is_End":"0"});
 
 
 class SAEApplication(tornado.wsgi.WSGIApplication):

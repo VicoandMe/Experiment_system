@@ -31,13 +31,20 @@ function AjaxHandler(method, url, callback, content, vargs) {
 
 function updateMessage(items) {
   if (items["is_End"] == "0") {
-    document.getElementById('image').setAttribute('src', './static/img/' + items["image"] + '.png');
-    document.getElementById('Question').innerHTML = items["Question"];
+    document.getElementById('image').setAttribute('src', 'http://sysujob-image.stor.sinaapp.com/' + items["image"] + '.png');
+    if(items["Question"][0] == "6") {
+	  document.getElementById("NextButton").setAttribute("disabled", "True");
+	  var GradeDiv = document.getElementById("GradeDiv");
+	  GradeDiv.style.display = "block";
+	}
+    var NextButton = document.getElementById("NextButton");
+    NextButton.setAttribute("class", "button gray round");
+	document.getElementById('Question').innerHTML = items["Question"];
     document.getElementById('PselectA').innerHTML = items["SelectA"];
     document.getElementById('PselectB').innerHTML = items["SelectB"];
     document.getElementById('PselectC').innerHTML = items["SelectC"];
     document.getElementById('PselectD').innerHTML = items["SelectD"];
-  } else {
+  } else if(items["is_End"] == "1") {
     alert("实验结束，感谢您的参与～");
 	var div = document.getElementById("Experiment");
 	removeElement(div);
@@ -81,10 +88,16 @@ function removeElement(element) {
   }
 }
 
+function inputCheck() {
+  var NextButton = document.getElementById("NextButton");
+  NextButton.setAttribute("class", "button blue round");
+}
+
 function setInputAttribute(item) {
   item.setAttribute("type", "radio");
   item.style.float = "left";
-  item.style.marginRight = "5px";
+  item.style.marginRight = "1px";
+  item.setAttribute("onclick", "inputCheck()");
 }
 
 function createSelection() {
@@ -146,6 +159,11 @@ function createSelection() {
 function submitGrade() {
   var select = document.getElementById("select");
   var value = select.value;
+  document.getElementById("NextButton").disabled = false;
+  var GradeDiv = document.getElementById("GradeDiv");
+  GradeDiv.style.display = "none";
+  var option = document.getElementById("4");
+  option.selected = true;
   AjaxHandler("POST", "/post/Grade", nvoid, {"value":value});
 }
 
@@ -154,7 +172,7 @@ function createGradeDiv() {
   div.style.hetght = "20%";
   div.setAttribute("id", "GradeDiv");
   var p = document.createElement("h3");
-  p.innerHTML = "请问该图是否易于理解？ <br> 请为该图评分。<br> 1表示极易理解，7表示极难理解";
+  p.innerHTML = "请问该图是否易于理解？ <br> 请为该图评分。数字1表示极易理解，数字7表示极难理解";
   var form = document.createElement("form");
   form.style.marginTop = "10px";
   var select = document.createElement("select");
@@ -163,13 +181,17 @@ function createGradeDiv() {
   for(i = 1; i < 8; i++) {
     var option = document.createElement("option");
 	option.setAttribute("value", i.toString());
+	option.setAttribute("id", i.toString());
+	if (i == 4) {
+	  option.selected = true;
+	}
 	option.innerHTML = i.toString();
 	select.appendChild(option);
   }
   var subButton = document.createElement("button");
   subButton.innerHTML = "提交评分";
   subButton.onclick = eval("(function() { submitGrade(); })");
-  subButton.setAttribute("class", "button gray round");
+  subButton.setAttribute("class", "button blue round");
   subButton.style.marginTop = "10px";
   subButton.style.marginLeft = "10px";
   subButton.style.float = "left";
@@ -177,6 +199,7 @@ function createGradeDiv() {
   div.appendChild(p);
   div.appendChild(form);
   div.appendChild(subButton);
+  div.style.display = "none";
   return div;
 }
 
@@ -193,7 +216,6 @@ function startExperiment() {
   imageDiv.style.width = "80%";
   imageDiv.style.float = "left";
 
-
   var QuestionAndSelectDiv = document.createElement("div");
   QuestionAndSelectDiv.setAttribute("id", "QuestionAndSelectDiv");
   QuestionAndSelectDiv.style.width = "20%";
@@ -207,7 +229,7 @@ function startExperiment() {
   var Question = document.createElement("h3");
   Question.setAttribute("id", "Question");
   Question.style.width = "100%";
-  Question.style.marginTop = "150px";
+  Question.style.marginTop = "30%";
   Question.style.paddingRight = "20px";
   QuestionAndSelectDiv.appendChild(Question);
   QuestionAndSelectDiv.appendChild(document.createElement("br"));
@@ -221,6 +243,7 @@ function startExperiment() {
   NextButton.innerHTML = "下一题";
   NextButton.onclick = eval("(function() { NextQuestion(); })");
   NextButton.setAttribute("class", "button gray round");
+  NextButton.setAttribute("id", "NextButton");
   NextButton.style.marginTop = "25px";
   NextButton.style.marginLeft = "20px";
   NextButton.style.float = "left";
@@ -233,7 +256,6 @@ function startExperiment() {
   image.setAttribute("id", "image");
   image.setAttribute("src", "");
   image.style.width = "90%";
-  image.style.padding = "auto";
   image.style.marginLeft = "20px";
   imageDiv.appendChild(image);
   Experiment.appendChild(imageDiv);
