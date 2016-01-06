@@ -71,7 +71,7 @@ class BaseHandler(RequestHandler):
                 self.json = json_decode(self.request.body)
             self.ret = {}
             self.G = ["0", "01234123412341", "02341234123412", "03412341234123", "04123412341234"]
-            self.set_secure_cookie("Image_count", "13", expires_days=None)
+            self.set_secure_cookie("Image_count", "4", expires_days=None)
             self.set_secure_cookie("Question_count", "6", expires_days=None)
             self.db = tornado.database.Connection(MYSQL_HOST, MYSQL_DB, MYSQL_USER, MYSQL_PASS, max_idle_time = 5)
         except:
