@@ -172,7 +172,7 @@ function createGradeDiv() {
   div.style.hetght = "20%";
   div.setAttribute("id", "GradeDiv");
   var p = document.createElement("h3");
-  p.innerHTML = "请问该图是否易于理解？ <br> 请为该图评分。数字1表示极难理解，数字7表示极易理解";
+  p.innerHTML = "请问该图是否易于理解？ <br> 请为该图评分。数字1表示极易理解，数字7表示极难理解";
   var form = document.createElement("form");
   form.style.marginTop = "10px";
   var select = document.createElement("select");
