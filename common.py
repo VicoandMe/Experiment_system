@@ -71,8 +71,8 @@ class BaseHandler(RequestHandler):
                 self.json = json_decode(self.request.body)
             self.ret = {}
             self.G = ["0", "01234123412341", "02341234123412", "03412341234123", "04123412341234"]
-            self.set_secure_cookie("Image_count", "13")
-            self.set_secure_cookie("Question_count", "6")
+            self.set_secure_cookie("Image_count", "13", expires_days=None)
+            self.set_secure_cookie("Question_count", "6", expires_days=None)
             self.db = tornado.database.Connection(MYSQL_HOST, MYSQL_DB, MYSQL_USER, MYSQL_PASS, max_idle_time = 5)
         except:
             logging.traceback.print_exc()
@@ -98,11 +98,11 @@ class RegisterHandler(BaseHandler):
 class RegistHandler(BaseHandler):
     def post(self):
         try:
-            self.set_secure_cookie("paperTester", self.json['Student_ID'])
-            self.set_secure_cookie("current_image", "1")
-            self.set_secure_cookie("current_question", "0") 
+            self.set_secure_cookie("paperTester", self.json['Student_ID'], expires_days=None)
+            self.set_secure_cookie("current_image", "1",  expires_days=None)
+            self.set_secure_cookie("current_question", "0", expires_days=None) 
             #self.set_secure_cookie("random", str(random.randrange(1,5)))
-            self.set_secure_cookie("Group_ID", self.json['Group_ID'])
+            self.set_secure_cookie("Group_ID", self.json['Group_ID'],  expires_days=None)
             print self.json['Group_ID']
             self.db.execute("insert into `User` (`Student_ID`,`Name`) values ('%s', '%s')"%(str(self.json['Student_ID']), str(self.json['Name'])))
             self.send({"student_ID": self.json['Student_ID'], "status" : "200"})
@@ -158,20 +158,20 @@ class AcquireMessageHandler(BaseHandler):
             #random_d = self.get_secure_cookie("random")
             Image = current_image + '-' + self.G[int(self.get_secure_cookie("Group_ID"))][int(current_image)]
             if current_image == "1" and current_question == "0":
-                self.set_secure_cookie("startTime", str(int(time.time())))
+                self.set_secure_cookie("startTime", str(int(time.time())),  expires_days=None)
             if int(current_question) >= int(self.get_secure_cookie("Question_count")):
                 #store UseTime of current_image and reset startTime
                 Student_ID = self.get_current_user()
                 useTime = str(int(time.time()) - int(self.get_secure_cookie("startTime")))
-                self.set_secure_cookie("startTime", str(int(time.time())))
+                self.set_secure_cookie("startTime", str(int(time.time())),  expires_days=None)
                 self.db.execute("insert into `UseTime` (`Student_ID`, `Image_ID`, `UseTime`) values ('%s', '%s', '%s')" % (Student_ID, Image, useTime))
                 #reset current Image
                 current_image = str(int(current_image) + 1)
-                self.set_secure_cookie("current_image", current_image)
+                self.set_secure_cookie("current_image", current_image,  expires_days=None)
                 #random_d = str(random.randrange(1,5))
                 #print "Reset Random", "===", random_d
                 #self.set_secure_cookie("random", random_d)
-                current_question = self.set_secure_cookie("current_question", "0")
+                current_question = self.set_secure_cookie("current_question", "0",  expires_days=None)
                 current_question = "0"
 
             if int(current_image) > int(self.get_secure_cookie("Image_count")):
