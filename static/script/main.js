@@ -31,7 +31,7 @@ function AjaxHandler(method, url, callback, content, vargs) {
 
 function updateMessage(items) {
   if (items["is_End"] == "0") {
-    document.getElementById('image').setAttribute('src', 'http://sysujob-image.stor.applinzi.com/' + items["image"] + '.png');
+    document.getElementById('image').setAttribute('src', 'http://sysujobsupply-image.stor.applinzi.com/' + items["image"] + '.png');
     if(items["Question"][0] == "6") {
 	  document.getElementById("NextButton").setAttribute("disabled", "True");
 	  var GradeDiv = document.getElementById("GradeDiv");
