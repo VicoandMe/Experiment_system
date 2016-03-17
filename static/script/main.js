@@ -8,8 +8,10 @@ function AjaxHandler(method, url, callback, content, vargs) {
 	xmlhttp.onreadystatechange = function() {
 	  if (xmlhttp.readyState == 4) {
 	    if (xmlhttp.status == 200) {
-		  rtext = xmlhttp.responseText.split("======")[0];
-		  rtext = JSON.parse(rtext);
+			rtext = xmlhttp.responseText.split("======")[0];
+		  console.log('restext: ');
+		  console.log(rtext);
+			rtext = JSON.parse(rtext);
 		  console.log(rtext['data']);
 		  callback(rtext['data'], vargs);
 		} else {
@@ -21,8 +23,8 @@ function AjaxHandler(method, url, callback, content, vargs) {
 	  xmlhttp.open(method, url, true);
 	  if (content != undefined) {
 	    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-		contstring = JSON.stringify(content);
-		xmlhttp.send(contstring);
+		  contstring = JSON.stringify(content);
+		  xmlhttp.send(contstring);
 	  } else {
 	    xmlhttp.send();
 	  }
@@ -31,15 +33,19 @@ function AjaxHandler(method, url, callback, content, vargs) {
 
 function updateMessage(items) {
   if (items["is_End"] == "0") {
-    document.getElementById('image').setAttribute('src', 'http://sysujobsupply-image.stor.applinzi.com/' + items["image"] + '.png');
-    if(items["Question"][0] == "6") {
-	  document.getElementById("NextButton").setAttribute("disabled", "True");
-	  var GradeDiv = document.getElementById("GradeDiv");
-	  GradeDiv.style.display = "block";
-	}
+		//'http://sysujobsupply-image.stor.applinzi.com/'
+    document.getElementById('image').setAttribute('src', items["imageURL"] + items["image"] + '.png');
+    //alert(items["sevenPoint"]);
+		if(items["sevenPoint"] == "1") {
+		  document.getElementById("NextButton").setAttribute("disabled", "True");
+	    var GradeDiv = document.getElementById("GradeDiv");
+	    GradeDiv.style.display = "block";
+      var GradeDivP = document.getElementById("GradeDivP");
+		  GradeDivP.innerHTML = items["sevenPointQuestion"];
+		}
     var NextButton = document.getElementById("NextButton");
     NextButton.setAttribute("class", "button gray round");
-	document.getElementById('Question').innerHTML = items["Question"];
+	  document.getElementById('Question').innerHTML = items["Question"];
     document.getElementById('PselectA').innerHTML = items["SelectA"];
     document.getElementById('PselectB').innerHTML = items["SelectB"];
     document.getElementById('PselectC').innerHTML = items["SelectC"];
@@ -172,6 +178,7 @@ function createGradeDiv() {
   div.style.hetght = "20%";
   div.setAttribute("id", "GradeDiv");
   var p = document.createElement("h3");
+	p.setAttribute("id", "GradeDivP");
   p.innerHTML = "请问该图是否易于理解？ <br> 请为该图评分。数字1表示极易理解，数字7表示极难理解";
   var form = document.createElement("form");
   form.style.marginTop = "10px";

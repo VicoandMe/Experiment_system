@@ -1,13 +1,9 @@
-CREATE SCHEMA `Experiment` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
-
 Use Experiment;
 
 CREATE TABLE `TestInfo` (
   `ImageCount` VARCHAR(45) NOT NULL,
   `ImageCountGroup` VARCHAR(45) NOT NULL,
   `QuestionCount` VARCHAR(45) NOT NULL,
-  `SevenPointQuestion` VARCHAR(45) NOT NULL,
-  `ImageURL` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`ImageCount`, `ImageCountGroup`, `QuestionCount`));
 
 CREATE TABLE `Admin` (
@@ -34,7 +30,12 @@ CREATE TABLE `Question` (
   `SelectC` VARCHAR(45) NOT NULL,
   `SelectD` VARCHAR(45) NOT NULL,
   `CorrectAnswer` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`Q_ID`, `Image_ID`));
+  PRIMARY KEY (`Q_ID`, `Image_ID`),
+  CONSTRAINT `Image_ID`
+    FOREIGN KEY (`Image_ID`)
+    REFERENCES `Experiment`.`Image` (`Image_ID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
 
 CREATE TABLE `ParticipateAnswer` (
   `Student_ID` VARCHAR(45) NOT NULL,

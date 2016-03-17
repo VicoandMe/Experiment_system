@@ -1,0 +1,14 @@
+function adminInterface(items) {
+	if (items['status'] == "500") {
+	  alert("用户不存在或密码错误");
+	} else if (items['status'] == "200") {
+        
+        }
+}
+
+function adminLogin() {
+  var user = document.getElementById("username").value;
+	var password = document.getElementById("password").value;
+
+	AjaxHandler("POST", "/post/Admin", adminInterface, {"user":user, "password":password});
+}

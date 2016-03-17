@@ -26,25 +26,25 @@ function createInput(name, type, value) {
 
 function updateUserArea(items) {
   if (items['status'] == "200") {
-	document.getElementById('UserArea').innerHTML = items["student_ID"];
-	var title = document.getElementById('title');
-	title.style.height = "25%";
-	var container = document.getElementById('container');
-	var pro = document.createElement("h3");
-	pro.innerHTML = "实验注意事项";
-	pro.style.paddingTop = "20px";
-	var details = document.createElement("p");
-	details.innerHTML = "(1) 请认真阅读图表 <br> (2) 请选定答案后再点击下一题，不可空缺 <br> (3) 在每张图片的最后将要求对图片进行打分，请严格按照要求进行评分 <br> (4) 本实验一个包含13套图片，78道单项选择题 <br> (5) 实验将会记录参与者的选择和使用时间 <br> (6) 在实验过程中严禁互相交流 <br>";
-	container.appendChild(pro);
-	container.appendChild(details);
-	var startButton = document.createElement("button");
-	startButton.style.marginTop = "20px";
-	startButton.innerHTML = "start Experiment";
-	startButton.onclick = eval("(function(){ startExperiment(); })");
-	startButton.setAttribute("class", "button gray round");
-	container.appendChild(startButton);
-	container.style.width = "30%";
-	container.style.margin = "auto";
+	  document.getElementById('UserArea').innerHTML = items["student_ID"];
+	  var title = document.getElementById('title');
+	  title.style.height = "25%";
+	  var container = document.getElementById('container');
+	  var pro = document.createElement("h3");
+	  pro.innerHTML = "实验注意事项";
+	  pro.style.paddingTop = "20px";
+	  var details = document.createElement("p");
+	  details.innerHTML = "(1) 请认真阅读图表 <br> (2) 请选定答案后再点击下一题，不可空缺 <br> (3) 在每张图片的最后将要求对图片进行打分，请严格按照要求进行评分 <br> (4) 实验将会记录参与者的选择和使用时间 <br> (5) 在实验过程中严禁互相交流 <br>";
+	  container.appendChild(pro);
+	  container.appendChild(details);
+	  var startButton = document.createElement("button");
+	  startButton.style.marginTop = "20px";
+	  startButton.innerHTML = "start Experiment";
+	  startButton.onclick = eval("(function(){ startExperiment(); })");
+	  startButton.setAttribute("class", "button gray round");
+	  container.appendChild(startButton);
+	  container.style.width = "30%";
+	  container.style.margin = "auto";
   } else {
     alert("请使用未注册的Student ID");
   }
