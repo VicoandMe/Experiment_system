@@ -1,6 +1,3 @@
-CREATE SCHEMA `Experiment` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
-
-Use Experiment;
 
 CREATE TABLE `TestInfo` (
   `ImageCount` VARCHAR(45) NOT NULL,

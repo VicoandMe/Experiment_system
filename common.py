@@ -105,17 +105,17 @@ class BaseHandler(RequestHandler):
         pass
 
 class RegisterHandler(BaseHandler):
-    @tornado.web.asynchronous
+    #@tornado.web.asynchronous
     def get(self):
         self.render("./static/index.html")
 
 class AdminHandler(BaseHandler):
-    @tornado.web.asynchronous
+    #@tornado.web.asynchronous
     def get(self):
         self.render("./static/AdminLogin.html")
 
 class RegistHandler(BaseHandler):
-    @tornado.web.asynchronous
+    #@tornado.web.asynchronous
     def post(self):
         try:
             self.set_secure_cookie("paperTester", self.json['Student_ID'], expires_days=None)
@@ -129,7 +129,7 @@ class RegistHandler(BaseHandler):
             self.send({"status":"500"});
 
 class ExperimentHandler(BaseHandler):
-    @tornado.web.asynchronous
+    #@tornado.web.asynchronous
     def get(self):
         try:
             user = self.get_current_user()
@@ -138,7 +138,7 @@ class ExperimentHandler(BaseHandler):
             self.redirect('/', permanent = True)
 
 class GradeHandler(BaseHandler):
-    @tornado.web.asynchronous
+    #@tornado.web.asynchronous
     def post(self):
         try:
             value = self.json['value']
@@ -154,7 +154,7 @@ class GradeHandler(BaseHandler):
             self.send({"status":"500"})
 
 class AnswerHandler(BaseHandler):
-    @tornado.web.asynchronous
+    #@tornado.web.asynchronous
     def post(self):
         try:
             current_image = self.get_secure_cookie("current_image")
@@ -171,7 +171,7 @@ class AnswerHandler(BaseHandler):
            
 
 class AcquireMessageHandler(BaseHandler):
-    @tornado.web.asynchronous
+    #@tornado.web.asynchronous
     def post(self):
         try:
             current_image = self.get_secure_cookie("current_image")
@@ -217,7 +217,7 @@ class AcquireMessageHandler(BaseHandler):
             self.send({"status":"500", "is_End":"0"})
 
 class AdminCheckHandler(BaseHandler):
-    @tornado.web.asynchronous
+    #@tornado.web.asynchronous
     def post(self):
         try:
             user = self.json["user"]
@@ -234,7 +234,7 @@ class AdminCheckHandler(BaseHandler):
             self.send({"status":"500"})
 
 class UpdateSettings(BaseHandler):
-    @tornado.web.asynchronous
+    #@tornado.web.asynchronous
     def post(self):
         try:
             if self.get_secure_cookie("isAdmin") == "True":
@@ -251,7 +251,7 @@ class UpdateSettings(BaseHandler):
             self.send({"status":"500"})
 
 class lnQuestion(BaseHandler):
-    @tornado.web.asynchronous
+    #@tornado.web.asynchronous
     def post(self):
         try:
             testInfo = self.db.query("select * from `TestInfo`")
@@ -277,7 +277,7 @@ class lnQuestion(BaseHandler):
             self.send({"status":"500"})
 
 class UploadQuestions(BaseHandler):
-    @tornado.web.asynchronous
+    #@tornado.web.asynchronous
     def post(self):
         try:
             self.json["questionId"] = self.json["questionId"].split(":")[1]
