@@ -4,7 +4,7 @@ CREATE TABLE `TestInfo` (
   `ImageCountGroup` VARCHAR(45) NOT NULL,
   `QuestionCount` VARCHAR(45) NOT NULL,
   `SevenPointQuestion` VARCHAR(45) NOT NULL,
-  `ImageURL` VARCHAR(45) NOT NULL,
+  `ImageURL` VARCHAR(300) NOT NULL,
   PRIMARY KEY (`ImageCount`, `ImageCountGroup`, `QuestionCount`));
 
 CREATE TABLE `Admin` (
