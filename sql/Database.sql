@@ -1,3 +1,6 @@
+CREATE database if not exists `Experiment`;
+
+USE `Experiment`;
 
 CREATE TABLE `TestInfo` (
   `ImageCount` VARCHAR(45) NOT NULL,

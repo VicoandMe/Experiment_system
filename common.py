@@ -31,7 +31,7 @@ import uuid
 
 MYSQL_DB = "Experiment"
 MYSQL_USER = "root"
-MYSQL_PASS = "993613"
+MYSQL_PASS = "123456"
 MYSQL_HOST_M = "localhost"
 MYSQL_HOST_S = ""
 MYSQL_PORT = 8080

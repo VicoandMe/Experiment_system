@@ -34,15 +34,16 @@ function AjaxHandler(method, url, callback, content, vargs) {
 function updateMessage(items) {
   if (items["is_End"] == "0") {
 		//'http://sysujobsupply-image.stor.applinzi.com/'
-    document.getElementById('image').setAttribute('src', items["imageURL"] + items["image"] + '.png');
+//    document.getElementById('image').setAttribute('src', items["imageURL"] + items["image"] + '.png');
+    document.getElementById('image').setAttribute('src', "./static/img/" + items["image"] + ".png");
     //alert(items["sevenPoint"]);
-		if(items["sevenPoint"] == "1") {
-		  document.getElementById("NextButton").setAttribute("disabled", "True");
-	    var GradeDiv = document.getElementById("GradeDiv");
-	    GradeDiv.style.display = "block";
-      var GradeDivP = document.getElementById("GradeDivP");
-		  GradeDivP.innerHTML = items["sevenPointQuestion"];
-		}
+    if(items["sevenPoint"] == "1") {
+	document.getElementById("NextButton").setAttribute("disabled", "True");
+	var GradeDiv = document.getElementById("GradeDiv");
+	GradeDiv.style.display = "block";
+        var GradeDivP = document.getElementById("GradeDivP");
+	GradeDivP.innerHTML = items["sevenPointQuestion"];
+    }
     var NextButton = document.getElementById("NextButton");
     NextButton.setAttribute("class", "button gray round");
 	  document.getElementById('Question').innerHTML = items["Question"];
